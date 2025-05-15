@@ -131,7 +131,7 @@ export const Navbar = async () => {
                         </h3>
                         <p className="text-gray-100 text-sm">
                           Thul klivian doldur thisspiasian calrissian. Garindan
-                          d8 aurra twi'lek tund polis gen'dai sola tarpals.
+                          d8 aurra twilek tund polis gendai sola tarpals.
                         </p>
                         <div className="flex items-center py-3">
                         <svg
@@ -177,10 +177,10 @@ export const Navbar = async () => {
               <div className="container mx-auto w-full flex flex-wrap justify-between mx-2">
                 <div className="w-full text-white mb-8 text-center">
                   <h2 className="font-bold text-2xl">
-                    Listen, why don’t you wait out by the speeder.
+                    Listen, why dont you wait out by the speeder.
                   </h2>
                   <p>
-                    our droids. They’ll have to wait outside. We don’t want them
+                    our droids. Theyll have to wait outside. We dont want them
                     here.
                   </p>
                 </div>
@@ -199,7 +199,7 @@ export const Navbar = async () => {
                   </div>
                   <p className="text-gray-100 text-sm">
                     Thul klivian doldur thisspiasian calrissian. Garindan d8
-                    aurra twi'lek tund polis gen'dai sola tarpals.
+                    aurra twilek tund polis gendai sola tarpals.
                   </p>
                   <div className="flex items-center py-3">
                     <svg
@@ -232,7 +232,7 @@ export const Navbar = async () => {
                   </div>
                   <p className="text-gray-100 text-sm">
                     Thul klivian doldur thisspiasian calrissian. Garindan d8
-                    aurra twi'lek tund polis gen'dai sola tarpals.
+                    aurra twilek tund polis gendai sola tarpals.
                   </p>
                   <div className="flex items-center py-3">
                     <svg
@@ -265,7 +265,7 @@ export const Navbar = async () => {
                   </div>
                   <p className="text-gray-100 text-sm">
                     Thul klivian doldur thisspiasian calrissian. Garindan d8
-                    aurra twi'lek tund polis gen'dai sola tarpals.
+                    aurra twilek tund polis gendai sola tarpals.
                   </p>
                   <div className="flex items-center py-3">
                     <svg
@@ -298,7 +298,7 @@ export const Navbar = async () => {
                   </div>
                   <p className="text-gray-100 text-sm">
                     Thul klivian doldur thisspiasian calrissian. Garindan d8
-                    aurra twi'lek tund polis gen'dai sola tarpals.
+                    aurra twilek tund polis gendai sola tarpals.
                   </p>
                   <div className="flex items-center py-3">
                     <svg
