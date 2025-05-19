@@ -16,9 +16,9 @@ const LandingPage = async () => {
   const products = await getProducts({ isFeatured: true });
   const categories = await getCategories();
 
-  const formattedCategories = categories.filter(
-    (category) => category.type.toString() === "UNISEX"
-  );
+  // const formattedCategories = categories.filter(
+  //   (category) => category.type.toString() === "UNISEX"
+  // );
 
   return (
     <>
@@ -28,7 +28,7 @@ const LandingPage = async () => {
       <Container>
         <div className="space-y-10 pb-20 mt-20">
           <div className="flex flex-col gap-y-12 md:gap-y-20 px-4 sm:px-6 lg:px-8">
-            <CategoryList categories={formattedCategories} />
+            <CategoryList categories={categories} />
             <HotDealBanner />
             <ProductList title="Hot Deals Products" data={products} />
             <LatestLaunches />
