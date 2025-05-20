@@ -36,8 +36,8 @@ const offers: Offer[] = [
 
 const BankOffers: React.FC = () => {
   return (
-    <div className="text-white p-4 rounded-lg max-w-6xl mx-auto">
-      <h2 className="text-xl font-semibold mb-3 border-b border-gray-600 pb-2">
+    <div className="text-black py-4 rounded-lg max-w-6xl mx-auto">
+      <h2 className="text-xl font-semibold mb-3 border-b border-gray-300 pb-2">
         Super Savings (4 OFFERS)
       </h2>
       <div
@@ -55,7 +55,7 @@ const BankOffers: React.FC = () => {
         {offers.map((offer, idx) => (
           <div
             key={idx}
-            className="min-w-[250px] p-4 border border-gray-500 rounded-lg bg-gray-800"
+            className="min-w-[250px] p-4 border border-gray-300 rounded-lg bg-white"
           >
             <div className="flex items-center gap-2 mb-2">
               <Image
@@ -66,8 +66,13 @@ const BankOffers: React.FC = () => {
               />
               <span className="font-medium">{offer.bank}</span>
             </div>
-            <p className="text-sm text-gray-300 line-clamp-3">{offer.description}</p>
-            <a href="#" className="text-sm text-blue-400 underline mt-2 inline-block">
+            <p className="text-sm text-gray-600 line-clamp-3">
+              {offer.description}
+            </p>
+            <a
+              href="#"
+              className="text-sm text-blue-400 underline mt-2 inline-block"
+            >
               View more
             </a>
           </div>

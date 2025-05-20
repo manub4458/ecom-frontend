@@ -68,7 +68,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
   ).filter((item) => item.id !== product.id);
 
   return (
-    <div className="bg-[#191919] text-white mb-16">
+    <div className="bg-white text-black mb-16">
       <Container>
         <div className="px-4 py-10 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
@@ -81,8 +81,8 @@ const ProductPage = async ({ params }: ProductPageProps) => {
             </div>
           </div>
         </div>
-        <hr className="m-10" />
-        <div className="flex flex-col gap-y-16 px-4 sm:px-6 lg:px-8">
+        <hr className="md:m-10 md:my-5 mx-10" />
+        <div className="flex flex-col gap-y-5 md:gap-y-8 px-4 sm:px-6 lg:px-8">
           <ProductDescription data={product} />
           <ProductList title="Similar Products" data={suggestProducts} />
         </div>

@@ -11,7 +11,7 @@ interface Query {
   isFeatured?: boolean;
   limit?: string;
   page?: string;
-  type?: "MEN" | "WOMEN" | "KIDS" | "BEAUTY" | "ELECTRONICS"; // Updated to match schema
+  type?: "MEN" | "WOMEN" | "KIDS" | "BEAUTY" | "ELECTRONICS";
   price?: string;
 }
 
@@ -31,7 +31,10 @@ export const getProducts = async (query: Query): Promise<Product[]> => {
   });
 
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, {
+      // Add cache control to ensure we're not getting stale data
+      cache: "no-store",
+    });
 
     if (!res.ok) {
       console.error("getProducts fetch error:", res.status, res.statusText);

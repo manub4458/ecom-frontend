@@ -1,19 +1,31 @@
 "use client";
-import React, { useState } from 'react';
-import { Search, MapPin, User, ShoppingCart } from 'lucide-react';
-import Link from 'next/link';
+import React, { useState } from "react";
+import { Search, MapPin, User, ShoppingCart } from "lucide-react";
+import Link from "next/link";
+import useMediaQuery from "@/hooks/use-mediaquery";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const isMobile = useMediaQuery("(max-width: 600px)");
+
+  if (isMobile) {
+    return null;
+  }
 
   return (
     <header className="bg-black text-white py-4 px-6 flex items-center justify-between shadow-md">
       {/* Logo */}
       <div className="flex items-center space-x-4">
-        <Link href='/'>
-          <img width="120px" className='rounded-md' src="/assets/favo-logo.jpg" alt="Favo Logo" />
+        <Link href="/">
+          <img
+            width="120px"
+            className="rounded-md"
+            src="/assets/favo-logo.jpg"
+            alt="Favo Logo"
+          />
         </Link>
-        <button
+        {/* <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="md:hidden focus:outline-none"
         >
@@ -32,11 +44,11 @@ export default function Header() {
             <line x1="3" y1="6" x2="21" y2="6" />
             <line x1="3" y1="18" x2="21" y2="18" />
           </svg>
-        </button>
+        </button> */}
       </div>
 
       {/* Menu for larger screens */}
-      <div className="hidden md:flex items-center space-x-2">
+      {/* <div className="hidden md:flex items-center space-x-2">
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="flex items-center space-x-1 focus:outline-none"
@@ -58,7 +70,7 @@ export default function Header() {
           </svg>
           <span>Menu</span>
         </button>
-      </div>
+      </div> */}
 
       {/* Search Bar */}
       <div className="flex-1 mx-4 max-w-lg">

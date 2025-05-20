@@ -7,7 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// Custom Next Arrow Component
+// Custom Arrow Components
 const NextArrow = (props: any) => {
   const { onClick } = props;
   return (
@@ -44,38 +44,64 @@ const HeroSlider: React.FC = () => {
     arrows: true,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
+    responsive: [
+      {
+        breakpoint: 640,
+        settings: {
+          arrows: false,
+          dots: true,
+        },
+      },
+    ],
   };
 
+  // Define banners with mobile-specific images
   const slides = [
     {
       id: 1,
-      image: "/assets/hero/banner1.webp",
+      desktopImage: "/assets/hero/banner1.webp",
+      mobileImage: "/assets/hero/banner-mobile.jpeg",
     },
     {
       id: 2,
-      image: "/assets/hero/banner2.webp",
+      desktopImage: "/assets/hero/banner2.webp",
+      mobileImage: "/assets/hero/banner-mobile-2.jpg",
     },
     {
       id: 3,
-      image: "/assets/hero/banner3.webp",
+      desktopImage: "/assets/hero/banner3.webp",
+      mobileImage: "/assets/hero/banner-mobile-3.jpeg",
     },
   ];
 
   return (
-    <div className="relative w-full mx-auto h-[60vh] sm:h-[70vh] md:h-[80vh]">
-      <Slider {...settings}>
+    <div className="relative w-full h-screen overflow-hidden">
+      <Slider {...settings} className="h-full">
         {slides.map((slide) => (
-          <div
-            key={slide.id}
-            className="relative w-full h-[60vh] sm:h-[70vh] md:h-[80vh] rounded-lg overflow-hidden"
-          >
-            <Image
-              src={slide.image}
-              alt={`Slide ${slide.id}`}
-              fill
-              className="object-cover"
-              priority
-            />
+          <div key={slide.id} className="relative w-full h-screen">
+            {/* For mobile devices */}
+            <div className="block sm:hidden w-full h-full">
+              <Image
+                src={slide.mobileImage}
+                alt={`Slide ${slide.id}`}
+                fill
+                sizes="100vw"
+                className="object-cover object-center"
+                priority
+              />
+            </div>
+
+            {/* For tablets and desktop */}
+            <div className="hidden sm:block w-full h-full">
+              <Image
+                src={slide.desktopImage}
+                alt={`Slide ${slide.id}`}
+                fill
+                sizes="100vw"
+                className="object-cover object-center"
+                priority
+              />
+            </div>
           </div>
         ))}
       </Slider>
