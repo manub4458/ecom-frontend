@@ -87,3 +87,15 @@ export interface PriceRange {
   value: string;
   name: string;
 }
+
+export type MenuItem = {
+  label: string;
+  href: string;
+  count?: number;
+};
+
+export type MenuCategory = {
+  name: string;
+  items: MenuItem[];
+  subItems?: MenuItem[] | Record<string, MenuItem[]>;
+};
