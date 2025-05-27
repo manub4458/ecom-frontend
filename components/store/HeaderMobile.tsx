@@ -180,88 +180,100 @@ export default function HeaderMobile() {
                 <div className="pl-4 pt-2 space-y-2">
                   {category.items.map((item) => (
                     <div key={item.label}>
-                      {category.name === "Home Appliances" &&
-                      item.label === "Air Coolers" ? (
-                        <div>
-                          <div className="flex items-center justify-between py-1 px-2 rounded-md hover:bg-gray-800 transition-colors">
-                            <span className="text-sm text-gray-300">
-                              {item.label}{" "}
-                              {item.count !== undefined && `(${item.count})`}
-                            </span>
-                            {category.subItems &&
-                              typeof category.subItems === "object" &&
-                              !Array.isArray(category.subItems) &&
-                              (category.subItems as Record<string, MenuItem[]>)[
-                                item.label
-                              ] && (
-                                <button
-                                  onClick={() =>
-                                    toggleCategory(
+                      {
+                        category.name === "Home Appliances" && (
+                          // item.label === "Air Coolers" ? (
+                          <div>
+                            <div className="flex items-center justify-between py-1 px-2 rounded-md hover:bg-gray-800 transition-colors">
+                              <span className="text-sm text-gray-300">
+                                {item.label}{" "}
+                                {item.count !== undefined && `(${item.count})`}
+                              </span>
+                              {category.subItems &&
+                                typeof category.subItems === "object" &&
+                                !Array.isArray(category.subItems) &&
+                                (
+                                  category.subItems as Record<
+                                    string,
+                                    MenuItem[]
+                                  >
+                                )[item.label] && (
+                                  <button
+                                    onClick={() =>
+                                      toggleCategory(
+                                        `${category.name}-${item.label}`
+                                      )
+                                    }
+                                    className="focus:outline-none"
+                                  >
+                                    {openCategories.includes(
                                       `${category.name}-${item.label}`
-                                    )
-                                  }
-                                  className="focus:outline-none"
-                                >
-                                  {openCategories.includes(
-                                    `${category.name}-${item.label}`
-                                  ) ? (
-                                    <Minus
-                                      size={14}
-                                      className="text-gray-400"
-                                    />
-                                  ) : (
-                                    <Plus size={14} className="text-gray-400" />
-                                  )}
-                                </button>
-                              )}
+                                    ) ? (
+                                      <Minus
+                                        size={14}
+                                        className="text-gray-400"
+                                      />
+                                    ) : (
+                                      <Plus
+                                        size={14}
+                                        className="text-gray-400"
+                                      />
+                                    )}
+                                  </button>
+                                )}
+                            </div>
+                            <div
+                              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                openCategories.includes(
+                                  `${category.name}-${item.label}`
+                                )
+                                  ? "max-h-[1000px]"
+                                  : "max-h-0"
+                              }`}
+                            >
+                              {category.subItems &&
+                                typeof category.subItems === "object" &&
+                                !Array.isArray(category.subItems) &&
+                                (
+                                  category.subItems as Record<
+                                    string,
+                                    MenuItem[]
+                                  >
+                                )[item.label] && (
+                                  <div className="pl-4 pt-2 space-y-1 flex flex-col gap-2">
+                                    {(
+                                      category.subItems as Record<
+                                        string,
+                                        MenuItem[]
+                                      >
+                                    )[item.label].map((subItem) => (
+                                      <Link
+                                        key={subItem.label}
+                                        href={subItem.href}
+                                        className="block text-xs text-gray-400 hover:text-white hover:underline transition-colors"
+                                        onClick={() => setIsMenuOpen(false)}
+                                      >
+                                        {subItem.label}{" "}
+                                        {subItem.count !== undefined &&
+                                          `(${subItem.count})`}
+                                      </Link>
+                                    ))}
+                                  </div>
+                                )}
+                            </div>
                           </div>
-                          <div
-                            className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                              openCategories.includes(
-                                `${category.name}-${item.label}`
-                              )
-                                ? "max-h-[1000px]"
-                                : "max-h-0"
-                            }`}
-                          >
-                            {category.subItems &&
-                              typeof category.subItems === "object" &&
-                              !Array.isArray(category.subItems) &&
-                              (category.subItems as Record<string, MenuItem[]>)[
-                                item.label
-                              ] && (
-                                <div className="pl-4 pt-2 space-y-1">
-                                  {(
-                                    category.subItems as Record<
-                                      string,
-                                      MenuItem[]
-                                    >
-                                  )[item.label].map((subItem) => (
-                                    <Link
-                                      key={subItem.label}
-                                      href={subItem.href}
-                                      className="block text-sm text-gray-300 hover:text-white hover:underline transition-colors"
-                                      onClick={() => setIsMenuOpen(false)}
-                                    >
-                                      {subItem.label}{" "}
-                                      {subItem.count !== undefined &&
-                                        `(${subItem.count})`}
-                                    </Link>
-                                  ))}
-                                </div>
-                              )}
-                          </div>
-                        </div>
-                      ) : (
-                        <Link
-                          href={item.href}
-                          className="block text-sm py-1 px-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          {item.label}{" "}
-                          {item.count !== undefined && `(${item.count})`}
-                        </Link>
-                      )}
+                        )
+                        // ) : (
+                        //   <Link
+                        //     href={item.href}
+                        //     className="block text-sm py-1 px-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+                        //     onClick={() => setIsMenuOpen(false)}
+                        //   >
+                        //     {item.label}{" "}
+                        //     {item.count !== undefined && `(${item.count})`}
+                        //   </Link>
+                        // )
+                      }
                     </div>
                   ))}
                   {category.subItems &&
