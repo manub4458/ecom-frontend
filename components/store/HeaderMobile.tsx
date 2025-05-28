@@ -9,6 +9,14 @@ import {
   Plus,
   Minus,
 } from "lucide-react";
+import {
+  MdShoppingBag,
+  MdFavorite,
+  MdLogin,
+  MdPersonAdd,
+  MdStore,
+  MdSupportAgent,
+} from "react-icons/md";
 import Link from "next/link";
 import useMediaQuery from "@/hooks/use-mediaquery";
 import { Popover, Transition } from "@headlessui/react";
@@ -35,7 +43,9 @@ export default function HeaderMobile() {
 
   return (
     <header className="bg-black text-white py-4 px-6 shadow-md">
+      {/* Top Row: Menu Icon, Logo, Profile, Cart */}
       <div className="flex items-center justify-between">
+        {/* Left: Menu Icon and Logo */}
         <div className="flex items-center space-x-4">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -94,12 +104,11 @@ export default function HeaderMobile() {
             )}
           </Popover>
           <button className="relative">
-            <Link href="/checkout/cart">
-              <ShoppingCart size={20} />
-            </Link>
+            <ShoppingCart size={20} />
           </button>
         </div>
       </div>
+
       {/* Search Bar */}
       <div className="mt-4">
         <div className="relative">
@@ -113,6 +122,7 @@ export default function HeaderMobile() {
           </button>
         </div>
       </div>
+
       {/* Sidebar Menu */}
       <div
         className={`fixed inset-y-0 left-0 w-64 bg-black text-white transform ${
@@ -180,100 +190,81 @@ export default function HeaderMobile() {
                 <div className="pl-4 pt-2 space-y-2">
                   {category.items.map((item) => (
                     <div key={item.label}>
-                      {
-                        category.name === "Home Appliances" && (
-                          // item.label === "Air Coolers" ? (
-                          <div>
-                            <div className="flex items-center justify-between py-1 px-2 rounded-md hover:bg-gray-800 transition-colors">
-                              <span className="text-sm text-gray-300">
-                                {item.label}{" "}
-                                {item.count !== undefined && `(${item.count})`}
-                              </span>
-                              {category.subItems &&
-                                typeof category.subItems === "object" &&
-                                !Array.isArray(category.subItems) &&
-                                (
-                                  category.subItems as Record<
-                                    string,
-                                    MenuItem[]
-                                  >
-                                )[item.label] && (
-                                  <button
-                                    onClick={() =>
-                                      toggleCategory(
-                                        `${category.name}-${item.label}`
-                                      )
-                                    }
-                                    className="focus:outline-none"
-                                  >
-                                    {openCategories.includes(
-                                      `${category.name}-${item.label}`
-                                    ) ? (
-                                      <Minus
-                                        size={14}
-                                        className="text-gray-400"
-                                      />
-                                    ) : (
-                                      <Plus
-                                        size={14}
-                                        className="text-gray-400"
-                                      />
-                                    )}
-                                  </button>
-                                )}
-                            </div>
-                            <div
-                              className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                                openCategories.includes(
-                                  `${category.name}-${item.label}`
-                                )
-                                  ? "max-h-[1000px]"
-                                  : "max-h-0"
-                              }`}
+                      {category.name === "Home Appliances" &&
+                      category.subItems &&
+                      typeof category.subItems === "object" &&
+                      !Array.isArray(category.subItems) &&
+                      (category.subItems as Record<string, MenuItem[]>)[
+                        item.label
+                      ] ? (
+                        <div>
+                          <div className="flex items-center justify-between py-1 px-2 rounded-md hover:bg-gray-800 transition-colors">
+                            <span className="text-sm text-gray-300">
+                              {item.label}{" "}
+                              {item.count !== undefined && `(${item.count})`}
+                            </span>
+                            <button
+                              onClick={() =>
+                                toggleCategory(`${category.name}-${item.label}`)
+                              }
+                              className="focus:outline-none"
                             >
-                              {category.subItems &&
-                                typeof category.subItems === "object" &&
-                                !Array.isArray(category.subItems) &&
-                                (
-                                  category.subItems as Record<
-                                    string,
-                                    MenuItem[]
-                                  >
-                                )[item.label] && (
-                                  <div className="pl-4 pt-2 space-y-1 flex flex-col gap-2">
-                                    {(
-                                      category.subItems as Record<
-                                        string,
-                                        MenuItem[]
-                                      >
-                                    )[item.label].map((subItem) => (
-                                      <Link
-                                        key={subItem.label}
-                                        href={subItem.href}
-                                        className="block text-xs text-gray-400 hover:text-white hover:underline transition-colors"
-                                        onClick={() => setIsMenuOpen(false)}
-                                      >
-                                        {subItem.label}{" "}
-                                        {subItem.count !== undefined &&
-                                          `(${subItem.count})`}
-                                      </Link>
-                                    ))}
-                                  </div>
-                                )}
-                            </div>
+                              {openCategories.includes(
+                                `${category.name}-${item.label}`
+                              ) ? (
+                                <Minus size={14} className="text-gray-400" />
+                              ) : (
+                                <Plus size={14} className="text-gray-400" />
+                              )}
+                            </button>
                           </div>
-                        )
-                        // ) : (
-                        //   <Link
-                        //     href={item.href}
-                        //     className="block text-sm py-1 px-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
-                        //     onClick={() => setIsMenuOpen(false)}
-                        //   >
-                        //     {item.label}{" "}
-                        //     {item.count !== undefined && `(${item.count})`}
-                        //   </Link>
-                        // )
-                      }
+                          <div
+                            className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                              openCategories.includes(
+                                `${category.name}-${item.label}`
+                              )
+                                ? "max-h-[1000px]"
+                                : "max-h-0"
+                            }`}
+                          >
+                            {category.subItems &&
+                              typeof category.subItems === "object" &&
+                              !Array.isArray(category.subItems) &&
+                              (category.subItems as Record<string, MenuItem[]>)[
+                                item.label
+                              ] && (
+                                <div className="pl-4 pt-2 space-y-1 flex flex-col gap-2">
+                                  {(
+                                    category.subItems as Record<
+                                      string,
+                                      MenuItem[]
+                                    >
+                                  )[item.label].map((subItem) => (
+                                    <Link
+                                      key={subItem.label}
+                                      href={subItem.href}
+                                      className="block text-xs text-gray-300 hover:text-white hover:underline transition-colors"
+                                      onClick={() => setIsMenuOpen(false)}
+                                    >
+                                      {subItem.label}{" "}
+                                      {subItem.count !== undefined &&
+                                        `(${subItem.count})`}
+                                    </Link>
+                                  ))}
+                                </div>
+                              )}
+                          </div>
+                        </div>
+                      ) : (
+                        <Link
+                          href={item.href}
+                          className="block text-sm py-1 px-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {item.label}{" "}
+                          {item.count !== undefined && `(${item.count})`}
+                        </Link>
+                      )}
                     </div>
                   ))}
                   {category.subItems &&
@@ -309,6 +300,7 @@ export default function HeaderMobile() {
           ))}
         </div>
       </div>
+
       {isMenuOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
