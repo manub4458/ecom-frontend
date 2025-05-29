@@ -8,25 +8,38 @@ import {
   Menu,
   Plus,
   Minus,
+  ChevronDown,
 } from "lucide-react";
-import {
-  MdShoppingBag,
-  MdFavorite,
-  MdLogin,
-  MdPersonAdd,
-  MdStore,
-  MdSupportAgent,
-} from "react-icons/md";
 import Link from "next/link";
 import useMediaQuery from "@/hooks/use-mediaquery";
 import { Popover, Transition } from "@headlessui/react";
 import { menuCategories, userMenuItems } from "@/utils/constant";
 import { MenuItem } from "@/types";
 
+// Search categories data (same as desktop)
+const searchCategories = [
+  "All",
+  "Air Conditioners",
+  "Boat Speakers",
+  "Bosch Washing Machines",
+  "Carrier Air Conditioners",
+  "Daikin Air Conditioners",
+  "Electronics",
+  "Food Processors",
+  "Hair Dryers",
+  "Home Appliances",
+  "Kitchen Appliances",
+  "Personal Care",
+  "Television",
+  "Washing Machine",
+];
+
 export default function HeaderMobile() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openCategories, setOpenCategories] = useState<string[]>([]);
-  const isMobile = useMediaQuery("(max-width: 600px)");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 1000px)");
 
   if (!isMobile) {
     return null;
@@ -42,7 +55,7 @@ export default function HeaderMobile() {
   };
 
   return (
-    <header className="bg-black text-white py-4 px-6 shadow-md">
+    <header className="bg-black text-white py-4 px-4 shadow-md">
       {/* Top Row: Menu Icon, Logo, Profile, Cart */}
       <div className="flex items-center justify-between">
         {/* Left: Menu Icon and Logo */}
@@ -64,12 +77,12 @@ export default function HeaderMobile() {
         </div>
 
         {/* Right: Profile, Cart */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-start space-x-4">
           <Popover className="relative">
             {({ open, close }) => (
               <>
                 <Popover.Button className="focus:outline-none">
-                  <User size={20} />
+                  <User size={24} />
                 </Popover.Button>
                 <Transition
                   show={open}
@@ -104,23 +117,70 @@ export default function HeaderMobile() {
             )}
           </Popover>
           <button className="relative">
-            <ShoppingCart size={20} />
+            <ShoppingCart size={24} />
           </button>
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="mt-4">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="What are you looking for?"
-            className="w-full py-2 px-4 rounded-full text-black focus:outline-none"
-          />
-          <button className="absolute right-2 top-1/2 transform -translate-y-1/2">
-            <Search size={20} className="text-gray-500" />
-          </button>
+      {/* Search Bar with Dropdown */}
+      <div className="mt-4 relative">
+        <div className="relative flex bg-white overflow-hidden rounded-[6px]">
+          {/* Category Dropdown Button */}
+          <div className="relative">
+            <button
+              onClick={() => setIsSearchDropdownOpen(!isSearchDropdownOpen)}
+              className="flex items-center gap-1 bg-[rgb(238,140,29)] text-white px-3 py-2 text-xs font-medium hover:bg-[rgb(238,140,29)] transition-colors min-w-max rounded-l-[6px] h-full"
+            >
+              <span className="truncate max-w-[80px]">{selectedCategory}</span>
+              <ChevronDown
+                size={14}
+                className={`transform transition-transform flex-shrink-0 ${
+                  isSearchDropdownOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* Search Input */}
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              placeholder="Search for Product Brands..."
+              className="w-full py-2 px-4 text-black focus:outline-none text-sm h-10"
+            />
+            <button className="absolute right-2 top-1/2 transform -translate-y-1/2">
+              <Search size={18} className="text-gray-500" />
+            </button>
+          </div>
         </div>
+
+        {/* Dropdown Menu */}
+        {isSearchDropdownOpen && (
+          <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-md shadow-lg z-[9999] max-h-48 overflow-y-auto mt-1">
+            <div className="py-1">
+              {searchCategories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => {
+                    setSelectedCategory(category);
+                    setIsSearchDropdownOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Click outside to close dropdown */}
+        {isSearchDropdownOpen && (
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => setIsSearchDropdownOpen(false)}
+          />
+        )}
       </div>
 
       {/* Sidebar Menu */}
