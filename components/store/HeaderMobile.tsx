@@ -117,7 +117,9 @@ export default function HeaderMobile() {
             )}
           </Popover>
           <button className="relative">
-            <ShoppingCart size={24} />
+            <Link href="/checkout/cart">
+              <ShoppingCart size={24} />
+            </Link>
           </button>
         </div>
       </div>
