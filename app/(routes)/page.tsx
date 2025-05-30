@@ -9,6 +9,7 @@ import { Container } from "@/components/ui/container";
 import { CategorySlider } from "@/components/home/category-slider";
 import { Bank } from "@/components/home/bank";
 import HotDealSlider from "@/components/store/hotDealSlider";
+import GalleryImage from "@/components/store/GalleryImage";
 
 export const revalidate = 0;
 
@@ -24,11 +25,12 @@ const LandingPage = async () => {
     <>
       <HeroSlider />
       <CategorySlider />
-      <Bank />
+      {/* <Bank /> */}
+      <GalleryImage />
       <Container>
         <div className="space-y-10 pb-20 mt-20">
           <div className="flex flex-col gap-y-12 md:gap-y-20 px-4 sm:px-6 lg:px-8">
-            <CategoryList categories={categories} />
+            {/* <CategoryList categories={categories} /> */}
             <HotDealBanner />
             <ProductList title="Hot Deals Products" data={products} />
             <LatestLaunches />
