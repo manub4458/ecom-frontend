@@ -18,7 +18,7 @@ import HeaderMobile from "./store/HeaderMobile";
 // });
 
 export const Navbar = async () => {
-  // const data = await getCategories();
+  const data = await getCategories();
   // const wishlistItems = await getWishlistItems();
 
   return (
@@ -46,8 +46,8 @@ export const Navbar = async () => {
 
             </Container> */}
 
-      <HeaderMobile />
-      <Header />
+      <HeaderMobile categories={data} />
+      <Header categories={data} />
     </header>
   );
 };

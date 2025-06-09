@@ -85,7 +85,7 @@ export const Navbar = async () => {
                 </svg>`,
     },
   ];
-  const data = await getCategories();
+  // const data = await getCategories();
   const wishlistItems = await getWishlistItems();
 
   return (
@@ -134,22 +134,21 @@ export const Navbar = async () => {
                           d8 aurra twilek tund polis gendai sola tarpals.
                         </p>
                         <div className="flex items-center py-3">
-                        <svg
-                          className="h-6 pr-3 fill-current text-white"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M20 10a10 10 0 1 1-20 0 10 10 0 0 1 20 0zm-2 0a8 8 0 1 0-16 0 8 8 0 0 0 16 0zm-8 2H5V8h5V5l5 5-5 5v-3z" />
-                        </svg>
-                        <a
-                          href="#"
-                          className="text-gray-800 bold border-b-2 border-black hover:text-white hover:border-white"
-                        >
-                          View all products
-                        </a>
+                          <svg
+                            className="h-6 pr-3 fill-current text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M20 10a10 10 0 1 1-20 0 10 10 0 0 1 20 0zm-2 0a8 8 0 1 0-16 0 8 8 0 0 0 16 0zm-8 2H5V8h5V5l5 5-5 5v-3z" />
+                          </svg>
+                          <a
+                            href="#"
+                            className="text-gray-800 bold border-b-2 border-black hover:text-white hover:border-white"
+                          >
+                            View all products
+                          </a>
+                        </div>
                       </div>
-                      </div>
-                   
                     </div>
                   </ul>
                 ))}

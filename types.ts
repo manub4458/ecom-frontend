@@ -28,6 +28,7 @@ export interface Category {
   type: CategoryType;
   classification: CategoryClassification;
   billboardId: Billboard;
+  bannerImage:string;
 }
 
 export enum ProductType {
@@ -98,4 +99,19 @@ export type MenuCategory = {
   name: string;
   items: MenuItem[];
   subItems?: MenuItem[] | Record<string, MenuItem[]>;
+  link: string;
 };
+
+export interface ApiCategory {
+  id: string;
+  name: string;
+  subCategories: ApiSubCategory[];
+}
+
+export interface ApiSubCategory {
+  id: string;
+  name: string;
+  categoryId: string;
+  parentId: string | null;
+  productCount: number; // Assumed API includes count
+}

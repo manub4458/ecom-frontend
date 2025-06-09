@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import {
   Search,
   MapPin,
-  User,
   ShoppingCart,
   Menu,
   Plus,
@@ -12,11 +11,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import useMediaQuery from "@/hooks/use-mediaquery";
-import { Popover, Transition } from "@headlessui/react";
-import { menuCategories, userMenuItems } from "@/utils/constant";
-import { MenuItem } from "@/types";
+import { MenuCategory, MenuItem } from "@/types";
+import { useSession } from "next-auth/react"; // Import useSession
+import { Account } from "@/components/account"; // Import Account component
 
-// Search categories data (same as desktop)
+// Search categories data
 const searchCategories = [
   "All",
   "Air Conditioners",
@@ -34,16 +33,127 @@ const searchCategories = [
   "Washing Machine",
 ];
 
-export default function HeaderMobile() {
+interface HeaderMobileProps {
+  categories: any[];
+}
+
+export default function HeaderMobile({ categories }: HeaderMobileProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openCategories, setOpenCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 1000px)");
+  const { data: session, status } = useSession(); // Get session data
 
   if (!isMobile) {
     return null;
   }
+
+  // Transform API data to match the existing structure
+  const transformCategoriesToMenuCategories = (
+    apiCategories: any[]
+  ): MenuCategory[] => {
+    return apiCategories.map((category) => {
+      const menuCategory: MenuCategory = {
+        name: category.name,
+        items: [],
+        subItems: undefined,
+        link: `/category/${category.id}?page=1`,
+      };
+
+      if (category.subCategories && category.subCategories.length > 0) {
+        if (category.name === "HOME APPLIANCES") {
+          menuCategory.items = category.subCategories.map((subCat: any) => ({
+            label: subCat.name,
+            href: `/category/${category.name
+              .toLowerCase()
+              .replace(/\s+/g, "-")}/${subCat.name
+              .toLowerCase()
+              .replace(/\s+/g, "-")}`,
+            count: subCat.childSubCategories?.length || 0,
+          }));
+
+          const subItemsObj: { [key: string]: MenuItem[] } = {};
+          category.subCategories.forEach((subCat: any) => {
+            if (
+              subCat.childSubCategories &&
+              subCat.childSubCategories.length > 0
+            ) {
+              subItemsObj[subCat.name] = subCat.childSubCategories.map(
+                (childSubCat: any) => ({
+                  label: childSubCat.name,
+                  href: `/category/${category.name
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")}/${subCat.name
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")}/${childSubCat.name
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")}`,
+                  count: 0,
+                })
+              );
+            }
+          });
+          menuCategory.subItems = subItemsObj;
+        } else {
+          menuCategory.items = category.subCategories.map((subCat: any) => ({
+            label: subCat.name,
+            href: `/category/${category.name
+              .toLowerCase()
+              .replace(/\s+/g, "-")}/${subCat.name
+              .toLowerCase()
+              .replace(/\s+/g, "-")}`,
+            count: subCat.childSubCategories?.length || 0,
+          }));
+
+          if (
+            category.subCategories.some(
+              (subCat: any) => subCat.childSubCategories?.length > 0
+            )
+          ) {
+            const allChildSubCategories: MenuItem[] = [];
+            category.subCategories.forEach((subCat: any) => {
+              if (
+                subCat.childSubCategories &&
+                subCat.childSubCategories.length > 0
+              ) {
+                subCat.childSubCategories.forEach((childSubCat: any) => {
+                  allChildSubCategories.push({
+                    label: childSubCat.name,
+                    href: `/category/${category.name
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}/${subCat.name
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}/${childSubCat.name
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}`,
+                    count: 0,
+                  });
+                });
+              }
+            });
+            if (allChildSubCategories.length > 0) {
+              menuCategory.subItems = allChildSubCategories;
+            }
+          }
+        }
+      } else {
+        menuCategory.items = [
+          {
+            label: category.name,
+            href: `/category/${category.name
+              .toLowerCase()
+              .replace(/\s+/g, "-")}`,
+            count: 0,
+          },
+        ];
+      }
+
+      return menuCategory;
+    });
+  };
+
+  const menuCategories = transformCategoriesToMenuCategories(categories);
 
   // Toggle category expansion
   const toggleCategory = (categoryName: string) => {
@@ -78,44 +188,11 @@ export default function HeaderMobile() {
 
         {/* Right: Profile, Cart */}
         <div className="flex items-start space-x-4">
-          <Popover className="relative">
-            {({ open, close }) => (
-              <>
-                <Popover.Button className="focus:outline-none">
-                  <User size={24} />
-                </Popover.Button>
-                <Transition
-                  show={open}
-                  as={React.Fragment}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
-                >
-                  <Popover.Panel
-                    static
-                    className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-50 border border-gray-200"
-                  >
-                    <div className="py-2">
-                      {userMenuItems.map((item) => (
-                        <Link
-                          key={item.label}
-                          href={item.href}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-black hover:bg-gray-100 hover:text-blue-800 transition-colors"
-                          onClick={() => close()}
-                        >
-                          {React.createElement(item.icon)}
-                          <span>{item.label}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  </Popover.Panel>
-                </Transition>
-              </>
-            )}
-          </Popover>
+          {/* Replace Popover with Account Component */}
+          <Account
+            session={status === "authenticated"}
+            name={session?.user?.name || "Guest"}
+          />
           <button className="relative">
             <Link href="/checkout/cart">
               <ShoppingCart size={24} />
@@ -224,14 +301,24 @@ export default function HeaderMobile() {
               } pb-2 mb-2`}
             >
               <div className="flex items-center justify-between py-2 px-2 rounded-md hover:bg-gray-800 transition-colors">
-                <span className="text-base font-medium text-white">
+                <Link
+                  href={category.link}
+                  className="text-base font-medium text-white"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   {category.name}
-                </span>
+                </Link>
                 {(category.items.length > 0 ||
                   (category.subItems &&
-                    Object.keys(category.subItems).length > 0)) && (
+                    (Array.isArray(category.subItems)
+                      ? category.subItems.length > 0
+                      : Object.keys(category.subItems).length > 0))) && (
                   <button
-                    onClick={() => toggleCategory(category.name)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleCategory(category.name);
+                    }}
                     className="focus:outline-none"
                   >
                     {openCategories.includes(category.name) ? (
@@ -252,7 +339,7 @@ export default function HeaderMobile() {
                 <div className="pl-4 pt-2 space-y-2">
                   {category.items.map((item) => (
                     <div key={item.label}>
-                      {category.name === "Home Appliances" &&
+                      {category.name === "HOME APPLIANCES" &&
                       category.subItems &&
                       typeof category.subItems === "object" &&
                       !Array.isArray(category.subItems) &&
@@ -261,14 +348,22 @@ export default function HeaderMobile() {
                       ] ? (
                         <div>
                           <div className="flex items-center justify-between py-1 px-2 rounded-md hover:bg-gray-800 transition-colors">
-                            <span className="text-sm text-gray-300">
+                            <Link
+                              href={item.href}
+                              className="text-sm text-gray-300"
+                              onClick={() => setIsMenuOpen(false)}
+                            >
                               {item.label}{" "}
                               {item.count !== undefined && `(${item.count})`}
-                            </span>
+                            </Link>
                             <button
-                              onClick={() =>
-                                toggleCategory(`${category.name}-${item.label}`)
-                              }
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                toggleCategory(
+                                  `${category.name}-${item.label}`
+                                );
+                              }}
                               className="focus:outline-none"
                             >
                               {openCategories.includes(
@@ -334,9 +429,9 @@ export default function HeaderMobile() {
                     category.subItems.length > 0 && (
                       <div className="mt-2">
                         <h4 className="text-sm font-semibold text-gray-400">
-                          {category.name === "Electronics"
+                          {category.name === "ELECTRONICS"
                             ? "Air Coolers"
-                            : category.name === "Computer & Printer"
+                            : category.name === "COMPUTER & PRINTER"
                             ? "Computer Accessories"
                             : "Top Categories"}
                         </h4>

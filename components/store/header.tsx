@@ -1,23 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import {
-  Search,
-  MapPin,
-  User,
-  ShoppingCart,
-  Linkedin,
-  ChevronDown,
-} from "lucide-react";
-import { MdArrowRight } from "react-icons/md";
+import { Search, MapPin, ShoppingCart, ChevronDown } from "lucide-react";
+import { MdArrowRight, MdArrowDropUp, MdArrowDropDown } from "react-icons/md";
 import Link from "next/link";
 import useMediaQuery from "@/hooks/use-mediaquery";
 import { Popover, Transition } from "@headlessui/react";
-import { menuCategories, userMenuItems } from "@/utils/constant";
 import { MenuCategory, MenuItem } from "@/types";
-import Logo from "@/public/assets/favo-logo.jpg";
-// import { ReactComponent as Arrow } from "@/public/svg/arrow.svg";
-import Image from "next/image";
-import { MdArrowDropUp, MdArrowDropDown } from "react-icons/md";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react"; // Import useSession
+import { Account } from "@/components/account"; // Import the Account component
 
 // Search categories data
 const searchCategories = [
@@ -37,16 +28,135 @@ const searchCategories = [
   "Washing Machine",
 ];
 
-export default function Header() {
+interface DynamicHeaderProps {
+  categories: any[];
+}
+
+export default function DynamicHeader({ categories }: DynamicHeaderProps) {
   const isMobile = useMediaQuery("(max-width: 1000px)");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
+  const router = useRouter();
+  const { data: session, status } = useSession(); // Get session data
+
+  // Transform API data to match the existing static structure
+  const transformCategoriesToMenuCategories = (
+    apiCategories: any[]
+  ): MenuCategory[] => {
+    return apiCategories.map((category) => {
+      const menuCategory: MenuCategory = {
+        name: category.name,
+        items: [],
+        subItems: undefined,
+        link: `/category/${category.id}?page=1`,
+      };
+
+      if (category.subCategories && category.subCategories.length > 0) {
+        if (category.name === "HOME APPLIANCES") {
+          menuCategory.items = category.subCategories.map((subCat: any) => ({
+            label: subCat.name,
+            href: `/category/${category.name
+              .toLowerCase()
+              .replace(/\s+/g, "-")}/${subCat.name
+              .toLowerCase()
+              .replace(/\s+/g, "-")}`,
+            count: subCat.childSubCategories?.length || 0,
+          }));
+
+          const subItemsObj: { [key: string]: MenuItem[] } = {};
+          category.subCategories.forEach((subCat: any) => {
+            if (
+              subCat.childSubCategories &&
+              subCat.childSubCategories.length > 0
+            ) {
+              subItemsObj[subCat.name] = subCat.childSubCategories.map(
+                (childSubCat: any) => ({
+                  label: childSubCat.name,
+                  href: `/category/${category.name
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")}/${subCat.name
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")}/${childSubCat.name
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")}`,
+                  count: 0,
+                })
+              );
+            }
+          });
+          menuCategory.subItems = subItemsObj;
+        } else {
+          menuCategory.items = category.subCategories.map((subCat: any) => ({
+            label: subCat.name,
+            href: `/category/${category.name
+              .toLowerCase()
+              .replace(/\s+/g, "-")}/${subCat.name
+              .toLowerCase()
+              .replace(/\s+/g, "-")}`,
+            count: subCat.childSubCategories?.length || 0,
+          }));
+
+          if (
+            category.subCategories.some(
+              (subCat: any) => subCat.childSubCategories?.length > 0
+            )
+          ) {
+            const allChildSubCategories: MenuItem[] = [];
+            category.subCategories.forEach((subCat: any) => {
+              if (
+                subCat.childSubCategories &&
+                subCat.childSubCategories.length > 0
+              ) {
+                subCat.childSubCategories.forEach((childSubCat: any) => {
+                  allChildSubCategories.push({
+                    label: childSubCat.name,
+                    href: `/category/${category.name
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}/${subCat.name
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}/${childSubCat.name
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}`,
+                    count: 0,
+                  });
+                });
+              }
+            });
+            if (allChildSubCategories.length > 0) {
+              menuCategory.subItems = allChildSubCategories;
+            }
+          }
+        }
+      } else {
+        menuCategory.items = [
+          {
+            label: category.name,
+            href: `/category/${category.name
+              .toLowerCase()
+              .replace(/\s+/g, "-")}`,
+            count: 0,
+          },
+        ];
+      }
+
+      return menuCategory;
+    });
+  };
+
+  const menuCategories = transformCategoriesToMenuCategories(categories);
 
   if (isMobile) {
     return null;
   }
 
-  const rightAlignedCategories = ["Computer & Printer", "Personal Care"];
+  const getRightAlignedCategories = (categories: MenuCategory[]) => {
+    if (categories.length >= 2) {
+      return categories.slice(-2).map((cat) => cat.name);
+    }
+    return [];
+  };
+
+  const rightAlignedCategories = getRightAlignedCategories(menuCategories);
 
   function doubleMenuCategory(category: string): boolean {
     const categories = [
@@ -83,7 +193,6 @@ export default function Header() {
                 </div>
               </div>
 
-              {/* Submenu for Air Coolers */}
               <div className="absolute left-full top-0 ml-1 w-max bg-white border border-gray-200 rounded-md shadow-lg z-30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                 <div className="py-2">
                   {category.subItems &&
@@ -119,12 +228,6 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center space-x-4">
             <Link href="/">
-              {/* <Image
-                width={120}
-                className="rounded-md"
-                src={Logo}
-                alt="Favo Logo"
-              /> */}
               <img
                 src="https://www.favobliss.com/image/cache/catalog/logo/favobliss-full-logo-2503x938.jpg"
                 width="200"
@@ -132,25 +235,19 @@ export default function Header() {
                 alt="Favobliss"
                 title="Favobliss"
                 className="max-w-full"
-              ></img>
+              />
             </Link>
           </div>
 
           {/* Search Bar with Dropdown */}
           <div className="flex-1 mx-6 max-w-2xl relative">
             <div className="relative flex bg-white rounded-md overflow-hidden">
-              {/* All Dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setIsSearchDropdownOpen(!isSearchDropdownOpen)}
                   className="flex items-center gap-1 bg-[rgb(238,140,29)] text-white px-4 py-2.5 text-sm font-medium hover:bg-[rgb(238,140,29)] transition-colors min-w-max"
                 >
                   <span>{selectedCategory}</span>
-                  <span>
-                    {/* <MdArrowDropUp />
-                    <MdArrowDropDown /> */}
-                    {/* <Arrow /> */}
-                  </span>
                   <ChevronDown
                     size={16}
                     className={`transform transition-transform ${
@@ -160,7 +257,6 @@ export default function Header() {
                 </button>
               </div>
 
-              {/* Search Input */}
               <div className="flex-1 relative">
                 <input
                   type="text"
@@ -173,7 +269,6 @@ export default function Header() {
               </div>
             </div>
 
-            {/* Dropdown Menu - Moved outside the search bar container */}
             {isSearchDropdownOpen && (
               <div className="absolute top-full left-0 w-64 bg-white border border-gray-200 rounded-md shadow-lg z-[9999] max-h-60 overflow-y-auto mt-1">
                 <div className="py-1">
@@ -194,46 +289,13 @@ export default function Header() {
             )}
           </div>
 
+          {/* Right Side: Account, Location, and Cart */}
           <div className="flex items-center space-x-6">
-            <Popover className="relative">
-              {({ open, close }) => (
-                <>
-                  <Popover.Button className="focus:outline-none flex items-center gap-1 text-sm">
-                    <User size={24} />
-                    {/* <span>LOGIN</span> */}
-                  </Popover.Button>
-                  <Transition
-                    show={open}
-                    as={React.Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <Popover.Panel
-                      static
-                      className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-10 border border-gray-200"
-                    >
-                      <div className="py-2">
-                        {userMenuItems.map((item) => (
-                          <Link
-                            key={item.label}
-                            href={item.href}
-                            className="flex items-center gap-2 px-4 py-2 text-sm text-black hover:bg-gray-100 hover:text-blue-800 transition-colors"
-                            onClick={() => close()}
-                          >
-                            {React.createElement(item.icon)}
-                            <span>{item.label}</span>
-                          </Link>
-                        ))}
-                      </div>
-                    </Popover.Panel>
-                  </Transition>
-                </>
-              )}
-            </Popover>
+            {/* Replace User Popover with Account Component */}
+            <Account
+              session={status === "authenticated"}
+              name={session?.user?.name || "Guest"}
+            />
 
             <div className="hidden md:flex items-center space-x-1 text-sm">
               <MapPin size={24} />
@@ -244,11 +306,6 @@ export default function Header() {
               href="/checkout/cart"
               className="flex items-center gap-2 text-sm border border-customGray rounded-md pr-[12px]"
             >
-              <div className="relative">
-                {/* <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  0
-                </span> */}
-              </div>
               <div className="flex flex-col">
                 <span className="text-sm p-[10px]">0 item(s) - ₹0.00</span>
               </div>
@@ -256,15 +313,12 @@ export default function Header() {
             </Link>
           </div>
         </header>
-
-        {/* Click outside to close dropdown */}
         {isSearchDropdownOpen && (
           <div
             className="fixed inset-0 z-40"
             onClick={() => setIsSearchDropdownOpen(false)}
           />
         )}
-
         <nav className="bg-black text-white py-2 px-6 flex justify-between items-center shadow-md flex-wrap gap-2 gap-y-5 max-w-7xl mx-auto">
           {menuCategories.map((category) => (
             <Popover key={category.name} className="relative">
@@ -279,9 +333,16 @@ export default function Header() {
                     }}
                     onMouseLeave={() => close()}
                   >
+                    <button
+                      onClick={() => router.push(category.link)}
+                      className="w-full h-full px-3 text-sm hover:text-gray-300 focus:outline-none text-left"
+                    >
+                      {category.name.toUpperCase()}
+                    </button>
+
                     <Popover.Button
                       id={`popover-button-${category.name}`}
-                      className="text-sm hover:text-gray-300 focus:outline-none w-max"
+                      className="sr-only"
                     >
                       {category.name.toUpperCase()}
                     </Popover.Button>
@@ -304,7 +365,7 @@ export default function Header() {
                           ? "right-0"
                           : "left-0"
                       } ${
-                        category.name === "Home Appliances" ? "w-max" : "w-96"
+                        category.name === "HOME APPLIANCES" ? "w-max" : "w-96"
                       }`}
                       onMouseEnter={() => {
                         const button = document.getElementById(
@@ -314,8 +375,7 @@ export default function Header() {
                       }}
                       onMouseLeave={() => close()}
                     >
-                      {/* Special handling for Home Appliances */}
-                      {category.name === "Home Appliances"
+                      {category.name === "HOME APPLIANCES"
                         ? renderHomeAppliancesMenu(category, close)
                         : (category.items.length > 0 ||
                             (Array.isArray(category.subItems) &&
@@ -329,7 +389,7 @@ export default function Header() {
                             >
                               <div>
                                 <h3 className="text-orange-600 font-semibold mb-2">
-                                  {category.name === "Electronics" ||
+                                  {category.name === "ELECTRONICS" ||
                                   category.name === "Kitchen Appliances" ||
                                   category.name === "Computer & Printer"
                                     ? "Top Categories"
@@ -362,7 +422,7 @@ export default function Header() {
                                 category.subItems.length > 0 && (
                                   <div>
                                     <h3 className="text-orange-600 font-semibold mb-2">
-                                      {category.name === "Electronics"
+                                      {category.name === "ELECTRONICS"
                                         ? "Air Coolers"
                                         : category.name === "Computer & Printer"
                                         ? "Computer Accessories"

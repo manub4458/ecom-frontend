@@ -1,7 +1,6 @@
 import { getCategories } from "@/actions/get-categories";
 import { getProducts } from "@/actions/get-products";
 import HeroSlider from "@/components/store/billboard";
-import { CategoryList } from "@/components/store/category-list";
 import { HotDealBanner } from "@/components/store/hotDealBanner";
 import { LatestLaunches } from "@/components/store/latestLaunches";
 import { ProductList } from "@/components/store/product-list";
@@ -10,12 +9,13 @@ import { CategorySlider } from "@/components/home/category-slider";
 import { Bank } from "@/components/home/bank";
 import HotDealSlider from "@/components/store/hotDealSlider";
 import GalleryImage from "@/components/store/GalleryImage";
+import { CategoryList } from "@/components/store/category-list";
 
 export const revalidate = 0;
 
 const LandingPage = async () => {
   const products = await getProducts({ isFeatured: true });
-  const categories = await getCategories();
+  // const categories = await getCategories();
 
   // const formattedCategories = categories.filter(
   //   (category) => category.type.toString() === "UNISEX"

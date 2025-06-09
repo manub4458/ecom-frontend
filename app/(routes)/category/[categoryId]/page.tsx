@@ -10,6 +10,7 @@ import { MobileFilters } from "./_components/mobile-filters";
 import { PaginationComponent } from "./_components/pagination";
 import { Metadata, ResolvingMetadata } from "next";
 import { PriceRange } from "@/types";
+import Image from "next/image";
 
 interface CategoryPageProps {
   params: {
@@ -40,25 +41,51 @@ export async function generateMetadata(
   }
 
   const categoryName = searchParams.category
-    ? `${searchParams.category[0].toUpperCase() + searchParams.category.slice(1).toLowerCase()}'s`
+    ? `${
+        searchParams.category[0].toUpperCase() +
+        searchParams.category.slice(1).toLowerCase()
+      }'s`
     : "";
 
-    return {
-        title: `Buy ${searchParams.category ? (searchParams.category[0].toUpperCase() + searchParams.category.slice(1).toLowerCase()+"'s") : ""} ${category.name} Online | Get Deals, Shop Now!`,
-        description : `Dress to impress: Latest styles & trends for every occasion. Shop ${searchParams.category ? (searchParams.category[0].toUpperCase() + searchParams.category.slice(1).toLowerCase()+"'s") : ""} ${category.name}`,
-        openGraph: {
-            images: [category.billboardId.imageUrl, ...previousImages],
-            type : "website",
-        },
-        twitter : {
-            card: 'summary_large_image',
-            title: `Buy ${searchParams.category ? (searchParams.category[0].toUpperCase() + searchParams.category.slice(1).toLowerCase()+"'s") : ""} ${category.name} Online | Get Deals, Shop Now!`,
-            description : `Dress to impress: Latest styles & trends for every occasion. Shop ${searchParams.category ? (searchParams.category[0].toUpperCase() + searchParams.category.slice(1).toLowerCase()+"'s") : ""} ${category.name}`,
-            images: [category.billboardId.imageUrl], 
-        },
-        category : "ecommerce"
-        
-    }
+  return {
+    title: `Buy ${
+      searchParams.category
+        ? searchParams.category[0].toUpperCase() +
+          searchParams.category.slice(1).toLowerCase() +
+          "'s"
+        : ""
+    } ${category.name} Online | Get Deals, Shop Now!`,
+    description: `Dress to impress: Latest styles & trends for every occasion. Shop ${
+      searchParams.category
+        ? searchParams.category[0].toUpperCase() +
+          searchParams.category.slice(1).toLowerCase() +
+          "'s"
+        : ""
+    } ${category.name}`,
+    openGraph: {
+      images: [category.billboardId.imageUrl, ...previousImages],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Buy ${
+        searchParams.category
+          ? searchParams.category[0].toUpperCase() +
+            searchParams.category.slice(1).toLowerCase() +
+            "'s"
+          : ""
+      } ${category.name} Online | Get Deals, Shop Now!`,
+      description: `Dress to impress: Latest styles & trends for every occasion. Shop ${
+        searchParams.category
+          ? searchParams.category[0].toUpperCase() +
+            searchParams.category.slice(1).toLowerCase() +
+            "'s"
+          : ""
+      } ${category.name}`,
+      images: [category.billboardId.imageUrl],
+    },
+    category: "ecommerce",
+  };
 }
 const CategoryPage = async ({ params, searchParams }: CategoryPageProps) => {
   const products = await getProducts({
@@ -72,12 +99,13 @@ const CategoryPage = async ({ params, searchParams }: CategoryPageProps) => {
   });
 
   const category = await getCategoryById(params.categoryId);
+
   if (!category) {
     return (
       <div className="bg-white">
         <Container>
           <div className="px-4 sm:px-6 lg:px-8 pt-5 pb-24">
-            <NoResults  />
+            <NoResults />
           </div>
         </Container>
       </div>
@@ -113,6 +141,20 @@ const CategoryPage = async ({ params, searchParams }: CategoryPageProps) => {
 
   return (
     <div className="bg-white">
+      <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden">
+        <Image
+          src={category.bannerImage}
+          alt="Exciting Deals Banner"
+          layout="fill"
+          objectFit="cover"
+          priority
+        />
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+          <h1 className="text-white text-3xl md:text-5xl font-bold drop-shadow-md">
+            {category.name || "Exciting Deals"}
+          </h1>
+        </div>
+      </div>
       <Container>
         <div className="px-4 sm:px-6 lg:px-8 pt-5 pb-24">
           <div className="lg:grid lg:grid-cols-5 lg:gap-x-8 mt-14">
@@ -125,7 +167,7 @@ const CategoryPage = async ({ params, searchParams }: CategoryPageProps) => {
             </div>
             <div className="mt-6 lg:col-span-4 lg:mt-4">
               {products.length === 0 ? (
-                <NoResults  />
+                <NoResults />
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 lg:gap-10">
                   {products.map((product) => (
