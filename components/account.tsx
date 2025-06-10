@@ -13,6 +13,7 @@ import {
 import { Heart, LogOut, ShoppingCart, User } from "lucide-react";
 import { MdLogin, MdPersonAdd } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
 interface AccountProps {
   session: boolean;
@@ -21,6 +22,19 @@ interface AccountProps {
 
 export const Account = ({ session, name }: AccountProps) => {
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <div className="h-6 w-6 mx-2">
+        <FaRegUser className="h-full w-full text-zinc-300" />
+      </div>
+    );
+  }
 
   return (
     <DropdownMenu>

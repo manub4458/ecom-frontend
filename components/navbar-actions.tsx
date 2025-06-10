@@ -11,59 +11,74 @@ import { useEffect } from "react";
 import { useWishlist } from "@/hooks/use-wishlist";
 import { Account } from "./account";
 import { useSession } from "next-auth/react";
+import { Skeleton } from "./ui/skeleton";
 
 interface NavbarActionsProps {
-    wishlistItems : Wishlist & {
-        products : Product[]
-    } | null
+  wishlistItems:
+    | (Wishlist & {
+        products: Product[];
+      })
+    | null;
 }
 
-export const NavbarActions = ({
-    wishlistItems
-} : NavbarActionsProps) => {
+export const NavbarActions = ({ wishlistItems }: NavbarActionsProps) => {
+  const router = useRouter();
+  const { items } = useCart();
+  const { createWishlist } = useWishlist();
 
+  const session = useSession();
 
-    const router = useRouter();
-    const { items } = useCart();
-    const { createWishlist } = useWishlist();
+  useEffect(() => {
+    if (wishlistItems) {
+      const wishlistProductIds = wishlistItems.products.map(
+        (product) => product.productId
+      );
+      createWishlist(wishlistProductIds);
+    }
+  }, [wishlistItems]);
 
-    const session = useSession();
-
-    useEffect(()=>{
-        if (wishlistItems) {
-            const wishlistProductIds = wishlistItems.products.map((product) => product.productId);
-            createWishlist(wishlistProductIds);
-        }
-    }, [wishlistItems]);
-
+  if (session.status === "loading") {
     return (
-        <div className="ml-auto flex items-center gap-x-2 ">
-            <Account
-                session = {session.status === "authenticated"}
-                name = { session.data?.user?.name || "Guest" }
-            />
-            <Button
-                type="button"
-                size="icon"
-                variant="outline"
-                className="border-none"
-                onClick={() => router.push("/wishlist")}
-            >
-                <Heart className="text-zinc-700 h-6 w-6"/>
-            </Button>
-            <Button
-                type="button"
-                size="icon"
-                variant="outline"
-                className="relative group border-none"
-                onClick={() => router.push("/checkout/cart")}
-            >
-                <HiOutlineShoppingBag className="text-zinc-700 h-6 w-6"/>
-                <Badge className="absolute z-10 -right-2 -top-2 text-xs p-[4px] px-[7px] bg-zinc-700 group-hover:bg-zinc-600">
-                    {items.length}
-                </Badge>
-            </Button>
-            
-        </div>
-    )
-}
+      <div className="ml-auto flex items-center gap-x-2">
+        <Skeleton className="h-6 w-6 rounded-full" />
+        <Button variant="outline" size="icon" disabled>
+          <Heart className="text-zinc-300 h-6 w-6" />
+        </Button>
+        <Button variant="outline" size="icon" disabled>
+          <HiOutlineShoppingBag className="text-zinc-300 h-6 w-6" />
+        </Button>
+      </div>
+    );
+  }
+
+  const isAuthenticated = session.status === "authenticated";
+  return (
+    <div className="ml-auto flex items-center gap-x-2 ">
+      <Account
+        session={isAuthenticated}
+        name={session.data?.user?.name || "Guest"}
+      />
+      <Button
+        type="button"
+        size="icon"
+        variant="outline"
+        className="border-none"
+        onClick={() => router.push("/wishlist")}
+      >
+        <Heart className="text-zinc-700 h-6 w-6" />
+      </Button>
+      <Button
+        type="button"
+        size="icon"
+        variant="outline"
+        className="relative group border-none"
+        onClick={() => router.push("/checkout/cart")}
+      >
+        <HiOutlineShoppingBag className="text-zinc-700 h-6 w-6" />
+        <Badge className="absolute z-10 -right-2 -top-2 text-xs p-[4px] px-[7px] bg-zinc-700 group-hover:bg-zinc-600">
+          {items.length}
+        </Badge>
+      </Button>
+    </div>
+  );
+};
