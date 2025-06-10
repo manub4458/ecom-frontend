@@ -2,7 +2,6 @@
 
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +11,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Heart, LogOut, ShoppingCart, User } from "lucide-react";
-import { RiCoupon3Line } from "react-icons/ri";
+import { MdLogin, MdPersonAdd } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 
 interface AccountProps {
@@ -31,43 +30,63 @@ export const Account = ({ session, name }: AccountProps) => {
       <DropdownMenuContent className="w-52" align="end">
         <DropdownMenuLabel>{name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
-          onClick={() => router.push("/my/dashboard")}
-        >
-          <User className="mr-3 h-4 w-4" />
-          Account
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
-          onClick={() => router.push("/orders")}
-        >
-          <ShoppingCart className="mr-3 h-4 w-4" />
-          Orders
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
-          onClick={() => router.push("/wishlist")}
-        >
-          <Heart className="mr-3 h-4 w-4" />
-          Wishlist
-        </DropdownMenuItem>
-        {/* <DropdownMenuItem
+        {session ? (
+          <>
+            <DropdownMenuItem
+              className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
+              onClick={() => router.push("/my/dashboard")}
+            >
+              <User className="mr-3 h-4 w-4" />
+              Account
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
+              onClick={() => router.push("/orders")}
+            >
+              <ShoppingCart className="mr-3 h-4 w-4" />
+              Orders
+            </DropdownMenuItem>
+            {/* <DropdownMenuItem
           className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
           onClick={() => router.push("#")}
         >
           <RiCoupon3Line className="mr-3 h-4 w-4" />
           Coupons
         </DropdownMenuItem> */}
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
-          onClick={() => signOut()}
-          disabled={!session}
-        >
-          <LogOut className="mr-3 h-4 w-4" />
-          Logout
-        </DropdownMenuItem>
+            <DropdownMenuItem
+              className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
+              onClick={() => router.push("/wishlist")}
+            >
+              <Heart className="mr-3 h-4 w-4" />
+              Wishlist
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
+              onClick={() => signOut()}
+            >
+              <LogOut className="mr-3 h-4 w-4" />
+              Logout
+            </DropdownMenuItem>
+          </>
+        ) : (
+          <>
+            <DropdownMenuItem
+              className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
+              onClick={() => router.push("/login")}
+            >
+              <MdLogin className="mr-3 h-4 w-4" />
+              Sign In
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
+              onClick={() => router.push("/registration")}
+            >
+              <MdPersonAdd className="mr-3 h-4 w-4" />
+              Sign Up
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
