@@ -12,10 +12,9 @@ import {
 import Link from "next/link";
 import useMediaQuery from "@/hooks/use-mediaquery";
 import { MenuCategory, MenuItem } from "@/types";
-import { useSession } from "next-auth/react"; // Import useSession
-import { Account } from "@/components/account"; // Import Account component
+import { useSession } from "next-auth/react";
+import { Account } from "@/components/account";
 
-// Search categories data
 const searchCategories = [
   "All",
   "Air Conditioners",
@@ -43,13 +42,12 @@ export default function HeaderMobile({ categories }: HeaderMobileProps) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 1000px)");
-  const { data: session, status } = useSession(); // Get session data
+  const { data: session, status } = useSession();
 
   if (!isMobile) {
     return null;
   }
 
-  // Transform API data to match the existing structure
   const transformCategoriesToMenuCategories = (
     apiCategories: any[]
   ): MenuCategory[] => {
@@ -190,8 +188,8 @@ export default function HeaderMobile({ categories }: HeaderMobileProps) {
         <div className="flex items-start space-x-4">
           {/* Replace Popover with Account Component */}
           <Account
-            session={status === "authenticated"}
-            name={session?.user?.name || "Guest"}
+          // session={status === "authenticated"}
+          // name={session?.user?.name || "Guest"}
           />
           <button className="relative">
             <Link href="/checkout/cart">

@@ -1,6 +1,6 @@
 "use client";
 
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
@@ -13,28 +13,34 @@ import {
 import { Heart, LogOut, ShoppingCart, User } from "lucide-react";
 import { MdLogin, MdPersonAdd } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-interface AccountProps {
-  session: boolean;
-  name: string;
-}
-
-export const Account = ({ session, name }: AccountProps) => {
+export const Account = () => {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  if (!isMounted) {
+  const handleNavigation = (path: string) => {
+    // Close dropdown first
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+    setTimeout(() => router.push(path), 100);
+  };
+
+  if (!isMounted || status === "loading") {
     return (
       <div className="h-6 w-6 mx-2">
-        <FaRegUser className="h-full w-full text-zinc-300" />
+        <Skeleton className="h-full w-full rounded-full" />
       </div>
     );
   }
+
+  const isAuthenticated = status === "authenticated";
+  const userName = isAuthenticated ? session?.user?.name || "User" : "Account";
 
   return (
     <DropdownMenu>
@@ -42,9 +48,9 @@ export const Account = ({ session, name }: AccountProps) => {
         <FaRegUser className="h-6 w-6 mx-2" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-52" align="end">
-        <DropdownMenuLabel>{name}</DropdownMenuLabel>
+        <DropdownMenuLabel>{userName}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {session ? (
+        {isAuthenticated ? (
           <>
             <DropdownMenuItem
               className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
@@ -60,13 +66,6 @@ export const Account = ({ session, name }: AccountProps) => {
               <ShoppingCart className="mr-3 h-4 w-4" />
               Orders
             </DropdownMenuItem>
-            {/* <DropdownMenuItem
-          className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
-          onClick={() => router.push("#")}
-        >
-          <RiCoupon3Line className="mr-3 h-4 w-4" />
-          Coupons
-        </DropdownMenuItem> */}
             <DropdownMenuItem
               className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
               onClick={() => router.push("/wishlist")}
@@ -77,7 +76,7 @@ export const Account = ({ session, name }: AccountProps) => {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
-              onClick={() => signOut()}
+              onClick={() => signOut({ callbackUrl: "/" })}
             >
               <LogOut className="mr-3 h-4 w-4" />
               Logout
@@ -87,14 +86,14 @@ export const Account = ({ session, name }: AccountProps) => {
           <>
             <DropdownMenuItem
               className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
-              onClick={() => router.push("/login")}
+              onClick={() => handleNavigation("/login")}
             >
               <MdLogin className="mr-3 h-4 w-4" />
               Sign In
             </DropdownMenuItem>
             <DropdownMenuItem
               className="flex items-center text-zinc-700 font-semibold md:cursor-pointer"
-              onClick={() => router.push("/registration")}
+              onClick={() => handleNavigation("/registration")}
             >
               <MdPersonAdd className="mr-3 h-4 w-4" />
               Sign Up

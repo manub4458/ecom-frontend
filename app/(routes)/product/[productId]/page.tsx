@@ -8,7 +8,8 @@ import { redirect } from "next/navigation";
 import { Metadata, ResolvingMetadata } from "next";
 import { ProductReviews } from "@/components/store/product-reviews";
 import { ProductDescription } from "@/components/store/productDescription";
-import { Product } from "@/types";
+import { ProductBadges } from "@/components/store/productBadges";
+import { ProductTabs } from "@/components/store/prodcutTabs";
 
 interface ProductPageProps {
   params: { productId: string };
@@ -19,7 +20,6 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const product = await getProductById(params.productId);
-  console.log("product =", product);
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
@@ -70,20 +70,22 @@ const ProductPage = async ({ params }: ProductPageProps) => {
   return (
     <div className="bg-white text-black mb-16">
       <Container>
-        <div className="px-4 py-10 sm:px-6 lg:px-8">
+        <div className="px-4 py-10 sm:px-6 lg:px-5">
           <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
             <div>
               <Gallery images={product.productImages} />
             </div>
-            <div className="mt-10 sm:mt-16 lg:mt-0 md:px-24 lg:px-0 flex flex-col gap-y-10">
+            <div className="mt-10 sm:mt-16 lg:mt-0 md:px-24 lg:px-0 flex flex-col gap-y-5">
               <ProductDetails data={product} />
+              <ProductBadges />
               <ProductReviews productId={product.id} />
             </div>
           </div>
         </div>
-        <hr className="md:m-10 md:my-5 mx-10" />
+        <hr className="md:m-10 md:my-2 mx-10" />
         <div className="flex flex-col gap-y-5 md:gap-y-8 px-4 sm:px-6 lg:px-8">
-          <ProductDescription data={product} />
+          {/* <ProductDescription data={product} /> */}
+          <ProductTabs product={product} productId={params.productId} />
           <ProductList title="Similar Products" data={suggestProducts} />
         </div>
       </Container>

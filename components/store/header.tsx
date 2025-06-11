@@ -7,10 +7,8 @@ import useMediaQuery from "@/hooks/use-mediaquery";
 import { Popover, Transition } from "@headlessui/react";
 import { MenuCategory, MenuItem } from "@/types";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react"; // Import useSession
-import { Account } from "@/components/account"; // Import the Account component
+import { Account } from "@/components/account";
 
-// Search categories data
 const searchCategories = [
   "All",
   "Air Conditioners",
@@ -37,13 +35,11 @@ export default function DynamicHeader({ categories }: DynamicHeaderProps) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const router = useRouter();
-  const { data: session, status } = useSession(); // Get session data
 
-  // Transform API data to match the existing static structure
   const transformCategoriesToMenuCategories = (
     apiCategories: any[]
   ): MenuCategory[] => {
-    return apiCategories.map((category) => {
+    return apiCategories?.map((category) => {
       const menuCategory: MenuCategory = {
         name: category.name,
         items: [],
@@ -239,7 +235,6 @@ export default function DynamicHeader({ categories }: DynamicHeaderProps) {
             </Link>
           </div>
 
-          {/* Search Bar with Dropdown */}
           <div className="flex-1 mx-6 max-w-2xl relative">
             <div className="relative flex bg-white rounded-md overflow-hidden">
               <div className="relative">
@@ -289,12 +284,10 @@ export default function DynamicHeader({ categories }: DynamicHeaderProps) {
             )}
           </div>
 
-          {/* Right Side: Account, Location, and Cart */}
           <div className="flex items-center space-x-6">
-            {/* Replace User Popover with Account Component */}
             <Account
-              session={status === "authenticated"}
-              name={session?.user?.name || "Guest"}
+            // session={status === "authenticated"}
+            // name={session?.user?.name || "Guest"}
             />
 
             <div className="hidden md:flex items-center space-x-1 text-sm">

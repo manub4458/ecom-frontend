@@ -18,7 +18,16 @@ import HeaderMobile from "./store/HeaderMobile";
 // });
 
 export const Navbar = async () => {
-  const data = await getCategories();
+  const storeId = process.env.NEXT_PUBLIC_STORE_ID;
+  if (!storeId) {
+    console.error("Store ID is not defined");
+    return (
+      <header className="shadow-neutral-100 shadow-lg border-b">
+        <div>Error: Store ID is missing</div>
+      </header>
+    );
+  }
+  const data = await getCategories(storeId);
   // const wishlistItems = await getWishlistItems();
 
   return (

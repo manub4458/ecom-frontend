@@ -7,11 +7,10 @@ import { Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/use-cart";
 import { Product, Wishlist } from "@prisma/client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useWishlist } from "@/hooks/use-wishlist";
 import { Account } from "./account";
-import { useSession } from "next-auth/react";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface NavbarActionsProps {
   wishlistItems:
@@ -25,10 +24,10 @@ export const NavbarActions = ({ wishlistItems }: NavbarActionsProps) => {
   const router = useRouter();
   const { items } = useCart();
   const { createWishlist } = useWishlist();
-
-  const session = useSession();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     if (wishlistItems) {
       const wishlistProductIds = wishlistItems.products.map(
         (product) => product.productId
@@ -37,7 +36,7 @@ export const NavbarActions = ({ wishlistItems }: NavbarActionsProps) => {
     }
   }, [wishlistItems]);
 
-  if (session.status === "loading") {
+  if (!isMounted) {
     return (
       <div className="ml-auto flex items-center gap-x-2">
         <Skeleton className="h-6 w-6 rounded-full" />
@@ -51,13 +50,9 @@ export const NavbarActions = ({ wishlistItems }: NavbarActionsProps) => {
     );
   }
 
-  const isAuthenticated = session.status === "authenticated";
   return (
-    <div className="ml-auto flex items-center gap-x-2 ">
-      <Account
-        session={isAuthenticated}
-        name={session.data?.user?.name || "Guest"}
-      />
+    <div className="ml-auto flex items-center gap-x-2">
+      <Account />
       <Button
         type="button"
         size="icon"

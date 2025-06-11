@@ -11,6 +11,7 @@ import BankOffers from "./bankOffer";
 import DeliveryInfo from "./delieveryInfo";
 import KeyFeatures from "./keyFeatures";
 import ZipCarePlan from "./zipCarePlan";
+import { ProductFeatures } from "./productFeature";
 
 interface ProductDetailsProps {
   data: Product;
@@ -24,7 +25,7 @@ export const ProductDetails = ({ data }: ProductDetailsProps) => {
   };
 
   return (
-    <div className="min-h-screen text-black bg-white">
+    <div className="text-black bg-white">
       {/* Add the Header at the top */}
 
       {/* Main content */}
@@ -70,8 +71,10 @@ export const ProductDetails = ({ data }: ProductDetailsProps) => {
           </div>
         </div>
 
+        <ProductFeatures data={data} />
+
         {/* Exchange Options */}
-        <div className="border border-[#808080] h-[164px] my-4 rounded-sm">
+        {/* <div className="border border-[#808080] h-[164px] my-4 rounded-sm">
           <label className="flex items-start gap-3 p-4 border rounded-t-md border-gray-600">
             <input
               type="radio"
@@ -95,7 +98,7 @@ export const ProductDetails = ({ data }: ProductDetailsProps) => {
             />
             <span className="font-medium">Without Exchange</span>
           </label>
-        </div>
+        </div> */}
 
         {/* Screen Size */}
         {/* <div className="flex flex-col justify-start gap-y-2 gap-x-4 mt-8">
@@ -108,19 +111,19 @@ export const ProductDetails = ({ data }: ProductDetailsProps) => {
         </div> */}
 
         {/* Bank Offers, Delivery Info, Key Features, ZipCare Plan */}
-        <div>
+        {/* <div>
           <BankOffers />
-        </div>
-        <div className="max-w-4xl mx-auto py-4">
+        </div> */}
+        <div className="max-w-4xl mx-auto py-4 mt-5">
           <DeliveryInfo />
           <KeyFeatures />
         </div>
-        <div className="py-6">
+        {/* <div className="py-6">
           <ZipCarePlan />
-        </div>
+        </div> */}
 
         {/* Add to Cart and Wishlist */}
-        <div className="mt-10 grid grid-cols-2 max-w-sm gap-x-4">
+        <div className="mt-8 grid grid-cols-2 max-w-sm gap-x-4">
           <Button className="w-full h-14 font-bold" onClick={onHandleCart}>
             <HiShoppingBag className="mr-4 h-6 w-6" />
             ADD TO BAG

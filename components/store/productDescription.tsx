@@ -26,13 +26,13 @@ export const ProductDescription = ({ data }: ProductDescriptionProps) => {
 
   return (
     <>
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-2">
         <div className="max-w-full mx-auto flex flex-col space-y-8">
           {/* Product Details */}
           <div className="space-y-2">
-            <h4 className="font-semibold text-black text-2xl">
+            {/* <h4 className="font-semibold text-black text-2xl">
               Product Details
-            </h4>
+            </h4> */}
             <div
               className="text-zinc-600 [&_img]:max-w-full [&_img]:h-auto [&_img]:my-4"
               dangerouslySetInnerHTML={{ __html: data.description }}

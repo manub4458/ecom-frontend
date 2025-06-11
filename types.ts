@@ -28,7 +28,7 @@ export interface Category {
   type: CategoryType;
   classification: CategoryClassification;
   billboardId: Billboard;
-  bannerImage:string;
+  bannerImage: string;
 }
 
 export enum ProductType {
@@ -54,6 +54,7 @@ export interface Product {
   size: Size;
   color: Color;
   productImages: ProductImage[];
+  enabledFeatures: string[];
 }
 
 export interface ProductImage {
