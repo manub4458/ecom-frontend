@@ -111,9 +111,9 @@ export const ProductDetails = ({ data }: ProductDetailsProps) => {
         </div> */}
 
         {/* Bank Offers, Delivery Info, Key Features, ZipCare Plan */}
-        {/* <div>
+        <div>
           <BankOffers />
-        </div> */}
+        </div>
         <div className="max-w-4xl mx-auto py-4 mt-5">
           <DeliveryInfo />
           <KeyFeatures />
