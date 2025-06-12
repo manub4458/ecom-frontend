@@ -57,6 +57,7 @@ export default function HeaderMobile({ categories }: HeaderMobileProps) {
         items: [],
         subItems: undefined,
         link: `/category/${category.id}?page=1`,
+        slug: `/category/${category.slug}?page=1`,
       };
 
       if (category.subCategories && category.subCategories.length > 0) {
@@ -300,7 +301,7 @@ export default function HeaderMobile({ categories }: HeaderMobileProps) {
             >
               <div className="flex items-center justify-between py-2 px-2 rounded-md hover:bg-gray-800 transition-colors">
                 <Link
-                  href={category.link}
+                  href={category.slug}
                   className="text-base font-medium text-white"
                   onClick={() => setIsMenuOpen(false)}
                 >
