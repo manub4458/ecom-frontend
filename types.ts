@@ -55,6 +55,7 @@ export interface Product {
   color: Color;
   productImages: ProductImage[];
   enabledFeatures: string[];
+  slug: string;
 }
 
 export interface ProductImage {
@@ -101,6 +102,7 @@ export type MenuCategory = {
   items: MenuItem[];
   subItems?: MenuItem[] | Record<string, MenuItem[]>;
   link: string;
+  slug: string;
 };
 
 export interface ApiCategory {

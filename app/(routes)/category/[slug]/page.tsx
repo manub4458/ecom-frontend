@@ -1,4 +1,4 @@
-import { getCategoryById } from "@/actions/get-category";
+import { getCategoryBySlug } from "@/actions/get-category";
 import { getColors } from "@/actions/get-colors";
 import { getProducts } from "@/actions/get-products";
 import { getSizes } from "@/actions/get-sizes";
@@ -14,7 +14,7 @@ import Image from "next/image";
 
 interface CategoryPageProps {
   params: {
-    categoryId: string;
+    slug: string;
   };
   searchParams: {
     colorId?: string;
@@ -30,7 +30,7 @@ export async function generateMetadata(
   { params, searchParams }: CategoryPageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const category = await getCategoryById(params.categoryId);
+  const category = await getCategoryBySlug(params.slug);
   const previousImages = (await parent).openGraph?.images || [];
 
   if (!category) {
@@ -87,18 +87,9 @@ export async function generateMetadata(
     category: "ecommerce",
   };
 }
-const CategoryPage = async ({ params, searchParams }: CategoryPageProps) => {
-  const products = await getProducts({
-    type: searchParams.category,
-    categoryId: params.categoryId,
-    colorId: searchParams.colorId,
-    sizeId: searchParams.sizeId,
-    page: searchParams.page || "1",
-    price: searchParams.price,
-    limit: "12",
-  });
 
-  const category = await getCategoryById(params.categoryId);
+const CategoryPage = async ({ params, searchParams }: CategoryPageProps) => {
+  const category = await getCategoryBySlug(params.slug);
 
   if (!category) {
     return (
@@ -111,6 +102,16 @@ const CategoryPage = async ({ params, searchParams }: CategoryPageProps) => {
       </div>
     );
   }
+
+  const products = await getProducts({
+    type: searchParams.category,
+    categoryId: category.id,
+    colorId: searchParams.colorId,
+    sizeId: searchParams.sizeId,
+    page: searchParams.page || "1",
+    price: searchParams.price,
+    limit: "12",
+  });
 
   const sizes = await getSizes();
   const colors = await getColors();

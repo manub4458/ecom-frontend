@@ -1,4 +1,4 @@
-import { getProductById } from "@/actions/get-product";
+import { getProductBySlug } from "@/actions/get-product";
 import { getProducts } from "@/actions/get-products";
 import { Gallery } from "@/components/gallery";
 import { ProductDetails } from "@/components/store/product-details";
@@ -12,14 +12,14 @@ import { ProductBadges } from "@/components/store/productBadges";
 import { ProductTabs } from "@/components/store/prodcutTabs";
 
 interface ProductPageProps {
-  params: { productId: string };
+  params: { slug: string };
 }
 
 export async function generateMetadata(
   { params }: ProductPageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const product = await getProductById(params.productId);
+  const product = await getProductBySlug(params.slug);
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
@@ -53,7 +53,7 @@ export async function generateMetadata(
 }
 
 const ProductPage = async ({ params }: ProductPageProps) => {
-  const product = await getProductById(params.productId);
+  const product = await getProductBySlug(params.slug);
 
   if (!product) {
     redirect("/");
@@ -85,7 +85,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
         <hr className="md:m-10 md:my-2 mx-10" />
         <div className="flex flex-col gap-y-5 md:gap-y-8 px-4 sm:px-6 lg:px-8">
           {/* <ProductDescription data={product} /> */}
-          <ProductTabs product={product} productId={params.productId} />
+          <ProductTabs product={product} productId={product.id} />
           <ProductList title="Similar Products" data={suggestProducts} />
         </div>
       </Container>

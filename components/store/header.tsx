@@ -45,6 +45,7 @@ export default function DynamicHeader({ categories }: DynamicHeaderProps) {
         items: [],
         subItems: undefined,
         link: `/category/${category.id}?page=1`,
+        slug: `/category/${category.slug}?page=1`,
       };
 
       if (category.subCategories && category.subCategories.length > 0) {
@@ -327,7 +328,7 @@ export default function DynamicHeader({ categories }: DynamicHeaderProps) {
                     onMouseLeave={() => close()}
                   >
                     <button
-                      onClick={() => router.push(category.link)}
+                      onClick={() => router.push(category.slug)}
                       className="w-full h-full px-3 text-sm hover:text-gray-300 focus:outline-none text-left"
                     >
                       {category.name.toUpperCase()}
