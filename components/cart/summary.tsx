@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { useCheckout } from "@/hooks/use-checkout";
 import { useCheckoutAddress } from "@/hooks/use-checkout-address";
 import { usePaymentSuccessErrorModal } from "@/hooks/use-payment-success-error-modal";
+import { useCart } from "@/hooks/use-cart";
 
 export const Summary = () => {
   const router = useRouter();
@@ -19,6 +20,7 @@ export const Summary = () => {
   const searchParams = useSearchParams();
   const session = useSession();
   const { address } = useCheckoutAddress();
+  const { removeAll, removeItem } = useCart();
 
   const { checkOutItems } = useCheckout();
   const { onOpen } = usePaymentSuccessErrorModal();
@@ -33,7 +35,7 @@ export const Summary = () => {
 
   const updateOrder = async (id: string) => {
     try {
-      const order = await axios.patch(`/api/v1/order/${id}`, { isPaid: true });
+      await axios.patch(`/api/v1/order/${id}`, { isPaid: true });
     } catch (error) {
       console.error(error);
     }
@@ -44,6 +46,8 @@ export const Summary = () => {
       const orderId = searchParams.get("id");
       updateOrder(orderId!).then(() => {
         onOpen("success");
+        removeAll();
+        router.push("/orders");
       });
     }
 
@@ -65,6 +69,7 @@ export const Summary = () => {
       }
 
       if (!address) {
+        toast.error("Please provide a shipping address");
         return;
       }
 
@@ -87,7 +92,57 @@ export const Summary = () => {
         }
       );
 
-      window.location = response.data.url;
+      const { orderId: razorpayOrderId, amount, currency, key } = response.data;
+
+      const addressForNotes = {
+        address: String(address.address || ""),
+        landmark: String(address.landmark || ""),
+        town: String(address.town || ""),
+        district: String(address.district || ""),
+        state: String(address.state || ""),
+        zipCode: String(address.zipCode || ""),
+      };
+
+      let addressJsonString;
+      try {
+        addressJsonString = JSON.stringify(addressForNotes);
+        // Validate the JSON string by parsing it back
+        JSON.parse(addressJsonString);
+      } catch (error) {
+        console.error("Failed to stringify address:", error);
+        throw new Error("Invalid address format");
+      }
+
+      const options = {
+        key,
+        amount,
+        currency,
+        name: "Favobliss",
+        description: "Order Payment",
+        order_id: razorpayOrderId,
+        handler: function (response: any) {
+          router.push(`/checkout/cart?id=${orderId}`);
+        },
+        prefill: {
+          name: address.name || "",
+          email: session.data?.user?.email || "",
+          contact: address.phoneNumber || "",
+        },
+        notes: {
+          orderId,
+          address: addressJsonString,
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+
+      //@ts-ignore
+      const razorpay = new window.Razorpay(options);
+      razorpay.on("payment.failed", function (response: any) {
+        router.push(`/checkout/cart?cancelled=true`);
+      });
+      razorpay.open();
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong");

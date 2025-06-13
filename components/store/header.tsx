@@ -8,6 +8,8 @@ import { Popover, Transition } from "@headlessui/react";
 import { MenuCategory, MenuItem } from "@/types";
 import { useRouter } from "next/navigation";
 import { Account } from "@/components/account";
+import { useCart } from "@/hooks/use-cart";
+import { formatter } from "@/lib/utils";
 
 const searchCategories = [
   "All",
@@ -35,6 +37,10 @@ export default function DynamicHeader({ categories }: DynamicHeaderProps) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const router = useRouter();
+  const { getItemCount, getTotalAmount } = useCart();
+
+  const itemCount = getItemCount() || 0;
+  const totalAmount = getTotalAmount() || 0;
 
   const transformCategoriesToMenuCategories = (
     apiCategories: any[]
@@ -301,7 +307,9 @@ export default function DynamicHeader({ categories }: DynamicHeaderProps) {
               className="flex items-center gap-2 text-sm border border-customGray rounded-md pr-[12px]"
             >
               <div className="flex flex-col">
-                <span className="text-sm p-[10px]">0 item(s) - ₹0.00</span>
+                <span className="text-sm p-[10px]">
+                  {itemCount} item(s) - {formatter.format(totalAmount)}
+                </span>
               </div>
               <ShoppingCart size={24} />
             </Link>

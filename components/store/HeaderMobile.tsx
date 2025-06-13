@@ -14,6 +14,7 @@ import useMediaQuery from "@/hooks/use-mediaquery";
 import { MenuCategory, MenuItem } from "@/types";
 import { useSession } from "next-auth/react";
 import { Account } from "@/components/account";
+import { useCart } from "@/hooks/use-cart";
 
 const searchCategories = [
   "All",
@@ -43,6 +44,8 @@ export default function HeaderMobile({ categories }: HeaderMobileProps) {
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 1000px)");
   const { data: session, status } = useSession();
+  const { getItemCount } = useCart();
+  const itemCount = getItemCount();
 
   if (!isMobile) {
     return null;
@@ -195,6 +198,11 @@ export default function HeaderMobile({ categories }: HeaderMobileProps) {
           <button className="relative">
             <Link href="/checkout/cart">
               <ShoppingCart size={24} />
+              {itemCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">
+                  {itemCount}
+                </span>
+              )}
             </Link>
           </button>
         </div>

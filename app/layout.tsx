@@ -7,6 +7,7 @@ import { ModalProvider } from "@/providers/modal-provider";
 import { Toaster } from "sonner";
 import { SessionProvider } from "next-auth/react";
 import { FlowbiteProvider } from "@/providers/flowbite";
+import Script from "next/script";
 
 const inter = Urbanist({ subsets: ["latin"] });
 
@@ -38,6 +39,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <Footer />
+          <Script src="https://checkout.razorpay.com/v1/checkout.js" />
         </SessionProvider>
       </body>
     </html>
