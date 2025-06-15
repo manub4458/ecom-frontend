@@ -56,6 +56,17 @@ export interface Product {
   productImages: ProductImage[];
   enabledFeatures: string[];
   slug: string;
+  productSpecifications: ProductSpecification[];
+}
+
+export interface ProductSpecification {
+  specificationField: {
+    name: string;
+    group?: {
+      name: string;
+    };
+  };
+  value: string;
 }
 
 export interface ProductImage {

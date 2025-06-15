@@ -1,4 +1,3 @@
-// actions/get-products.ts
 import { Product } from "@/types";
 import qs from "query-string";
 
@@ -32,7 +31,6 @@ export const getProducts = async (query: Query): Promise<Product[]> => {
 
   try {
     const res = await fetch(url, {
-      // Add cache control to ensure we're not getting stale data
       cache: "no-store",
     });
 
