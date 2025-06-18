@@ -16,7 +16,7 @@ export const revalidate = 0;
 const LandingPage = async () => {
   const products = await getProducts({ isFeatured: true });
   const deals = await getHotDeals({
-    limit: "5",
+    limit: "10",
     timeFrame: "30 days",
   });
 
