@@ -28,32 +28,39 @@ const images = [
     width: 300,
     height: 400,
   },
+  {
+    href: "https://www.favobliss.com/mixer-juicer-grinder",
+    src: "https://www.favobliss.com/image/cache/catalog/carousel/mixer-grinder-juice-300x400.png",
+    srcSet:
+      "https://www.favobliss.com/image/cache/catalog/carousel/mixer-grinder-juice-300x400.png 1x, https://www.favobliss.com/image/cache/catalog/carousel/mixer-grinder-juice-600x800.png 2x",
+    alt: "Mixer Grinder",
+    width: 300,
+    height: 400,
+  },
 ];
 
 const Gallery = () => {
   return (
-    <div className="grid grid-cols-3 gap-4 p-6 mx-auto">
-      {images.map((img, index) => (
-        <a
-          key={index}
-          href={img.href}
-          className="block overflow-hidden rounded-lg shadow-md bg-white hover:scale-105 transition-transform"
-        >
-          <div
-            className={`relative ${
-              img.width > img.height ? "aspect-square" : "aspect-[3/4]"
-            }`}
+    <div className="w-full max-w-full mx-auto p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {images.map((img, index) => (
+          <a
+            key={index}
+            href={img.href}
+            className="block overflow-hidden rounded-lg shadow-md bg-white hover:scale-105 transition-transform duration-300"
           >
-            <Image
-              src={img.src}
-              alt={img.alt}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 300px"
-              className="object-cover"
-            />
-          </div>
-        </a>
-      ))}
+            <div className="relative aspect-[3/4] w-full">
+              <Image
+                src={img.src}
+                alt={img.alt}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                className="object-cover"
+              />
+            </div>
+          </a>
+        ))}
+      </div>
     </div>
   );
 };
