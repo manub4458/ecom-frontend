@@ -43,13 +43,22 @@ const BankOffers: React.FC = () => {
       <div
         className="flex gap-4 overflow-x-auto"
         style={{
-          scrollbarWidth: "none", // Firefox
-          msOverflowStyle: "none", // IE/Edge
+          scrollbarWidth: "thin", // Firefox
+          msOverflowStyle: "auto", // IE/Edge
         }}
       >
         <style jsx>{`
           div::-webkit-scrollbar {
-            display: none; // Chrome, Safari, Opera
+            height: 6px; /* horizontal scrollbar height */
+          }
+
+          div::-webkit-scrollbar-track {
+            background: transparent;
+          }
+
+          div::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
           }
         `}</style>
         {offers.map((offer, idx) => (

@@ -1,5 +1,5 @@
 import { getCategories } from "@/actions/get-categories";
-import { getProducts } from "@/actions/get-products";
+import { getHotDeals, getProducts } from "@/actions/get-products";
 import HeroSlider from "@/components/store/billboard";
 import { HotDealBanner } from "@/components/store/hotDealBanner";
 import { LatestLaunches } from "@/components/store/latestLaunches";
@@ -15,11 +15,10 @@ export const revalidate = 0;
 
 const LandingPage = async () => {
   const products = await getProducts({ isFeatured: true });
-  // const categories = await getCategories();
-
-  // const formattedCategories = categories.filter(
-  //   (category) => category.type.toString() === "UNISEX"
-  // );
+  const deals = await getHotDeals({
+    limit: "5",
+    timeFrame: "30 days",
+  });
 
   return (
     <>
@@ -32,7 +31,8 @@ const LandingPage = async () => {
           <div className="flex flex-col gap-y-12 md:gap-y-20 px-4 sm:px-6 lg:px-8">
             {/* <CategoryList categories={categories} /> */}
             <HotDealBanner />
-            <ProductList title="Hot Deals Products" data={products} />
+            <ProductList title="Latest Launches" data={products} />
+            <ProductList title="Hot Deals Products" data={deals || []} />
             <LatestLaunches />
             <div className="pt-8 ">
               <h3 className="text-3xl font-bold">Hot Deals</h3>
